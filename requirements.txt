@@ -1,0 +1,8 @@
+# 需要升级 pip & setuptools
+# 插件引擎
+setuptools
+twine
+git+https://gitee.com/lianyouli/yapsy.git#egg=yapsy&subdirectory=package
+
+# 消息队列
+pulsar-client==3.1.0

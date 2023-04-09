@@ -1,0 +1,9 @@
+[Core]
+Name = f1messagetype
+Module = f1messagetype
+
+[Documentation]
+Description = ISO8583 - F1 - Message Type
+Author = Arthur Li
+Version = 1.0.0
+Website = https://lianyouli.github.io
