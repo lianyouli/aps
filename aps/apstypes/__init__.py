@@ -2,7 +2,7 @@
 Author: Arthur lianyoucq@163.com
 Date: 2023-04-08 20:45:02
 LastEditors: Arthur
-LastEditTime: 2023-04-15 16:08:26
+LastEditTime: 2023-04-15 18:42:29
 Description: data type definitions
 '''
 from typing import Dict, Union
@@ -27,10 +27,8 @@ class ApsRouter:
     rejectionCode: str = '000000'
 
     def __post_init__(self):
-        logger.debug(
-            f"the headerLength will be counted these values: {self.__dict__.values()}")
-        self.headerLength = reduce(lambda x, y: x + y,
-                                   [len(str(v)) for v in self.__dict__.values() if v])
+        logger.debug(f"the headerLength will be counted these values: {self.__dict__.values()}")
+        self.headerLength = reduce(lambda x, y: x + y, [len(str(v)) for v in self.__dict__.values() if v])
 
         self.totalMessageLength = self.headerLength
 
@@ -69,14 +67,13 @@ class ApsData:
 
     def __post_init__(self):
         if self.message:
-            messageLengthList = [
-                getattr(i, 'length') for i in self.message.values() if hasattr(i, 'length')]
-
-            self.router.totalMessageLength += reduce(
-                lambda a, b: a + b, messageLengthList)
+            messageLengthList = [getattr(i, 'length') for i in self.message.values() if hasattr(i, 'length')]
+            logger.debug(f"the message's messageLengthList is {messageLengthList}")
+            self.router.totalMessageLength += reduce(lambda a, b: a + b, messageLengthList)
         if self.aux:
-            self.router.totalMessageLength += reduce(lambda a, b: a + b,
-                                                     [getattr(i, 'length') for i in self.aux.values() if hasattr(i, 'length')])
+            messageLengthList = [getattr(i, 'length') for i in self.aux.values() if hasattr(i, 'length')]
+            logger.debug(f"the aux's messageLengthList is {messageLengthList}")
+            self.router.totalMessageLength += reduce(lambda a, b: a + b, messageLengthList)
 
 
 @dataclass
