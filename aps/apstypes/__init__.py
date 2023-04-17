@@ -2,14 +2,15 @@
 Author: Arthur lianyoucq@163.com
 Date: 2023-04-08 20:45:02
 LastEditors: Arthur
-LastEditTime: 2023-04-15 18:42:29
+LastEditTime: 2023-04-17 22:01:02
 Description: data type definitions
 '''
 from typing import Dict, Union
-# from abc import ABC, abstractclassmethod
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from functools import reduce
 from aps import logger
+from aps.exceptions import IllegalLength
 
 
 @dataclass
@@ -48,12 +49,19 @@ class ApsRejectRouter(ApsRouter):
 
 
 @dataclass
-class ApsRecord:
-    length: int = 0
+class ApsRecord(ABC):
+    _length: int = 0
 
     @property
     def length(self):
-        raise NotImplementedError("Not Implemented")
+        return self._length
+
+    @length.setter
+    @abstractmethod
+    def length(self, length: int):
+        if length < 0:
+            raise IllegalLength(f"ApsRecord's length must be not less than 0, not : {self.length}")
+        self._length = length
 
 
 @dataclass
