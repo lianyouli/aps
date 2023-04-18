@@ -2,12 +2,14 @@
 Author: Arthur lianyoucq@163.com
 Date: 2023-04-08 20:25:20
 LastEditors: Arthur
-LastEditTime: 2023-04-15 18:22:53
+LastEditTime: 2023-04-18 22:06:55
 Description: f1 message type
 '''
 from aps.plugins import IFieldPlugin
-from aps.apstypes import ApsData, ApsRouter, ApsRecord
+from aps.apstypes import ApsData, ApsRouter, ApsRecord, ApsContext
 from aps.apstypes.messagetype import MessageType
+from aps.exceptions import ApsException
+from typing import Union
 
 
 class F1MessageTypeRecord(ApsRecord):
@@ -23,13 +25,8 @@ class F1MessageTypeRecord(ApsRecord):
 
 class F1MessageType(IFieldPlugin):
     fieldName = "f1messagetype"
-
-    def before(self) -> bool:
-        raise NotImplementedError("Not Implemented")
+    fieldId = 1001
 
     def transform(self) -> ApsData:
         # ApsData(router=None, message={"f1messagetype": "0000"}, aux={})
         return NotImplementedError("Not Implemented")
-
-    def after(self) -> bool:
-        raise NotImplementedError("Not Implemented")
