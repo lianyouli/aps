@@ -2,7 +2,7 @@
 Author: Arthur lianyoucq@163.com
 Date: 2023-04-08 22:35:59
 LastEditors: Arthur
-LastEditTime: 2023-04-18 22:05:20
+LastEditTime: 2023-04-23 10:18:15
 Description: test the plugins
 '''
 from aps.apstypes import ApsContext, ApsRouter, ApsData
@@ -48,8 +48,9 @@ class TestPlugins(unittest.TestCase):
 
         logger.debug(dir(f1))
 
-        f1.set(data=ApsData(ApsRouter(destinationID="90010000", sourceID="31040000", batchNo="01"), message=None, aux=None),
-               context=ApsContext(context={}))
+        f1.set(context=ApsContext(
+            config=None,
+            data=ApsData(ApsRouter(destinationID="90010000", sourceID="31040000", batchNo="01"), message=None, aux=None)))
 
         logger.info(f1.transform())
 
@@ -63,7 +64,7 @@ class TestPlugins(unittest.TestCase):
 
         logger.debug(dir(f1))
         data = ApsData(ApsRouter(destinationID="90010000", sourceID="31040000", batchNo="01"), message={}, aux={})
-        f1.set(data=data, context=ApsContext(context={}))
+        f1.set(context=ApsContext(data=data, config=None))
 
         logger.info(f1.transform())
 
@@ -77,10 +78,10 @@ class TestPlugins(unittest.TestCase):
 
         logger.debug(dir(f2))
         data = ApsData(ApsRouter(destinationID="90010000", sourceID="31040000", batchNo="01"), message={}, aux={})
-        f2.set(data=data, context=ApsContext(context={}))
+        f2.set(context=ApsContext(data=data, config=None))
 
         logger.info(f2.transform())
-        assert f2.data == f2.transform()
+        assert f2.context.data == f2.transform()
 
     def test_f2pan_pan_and_bin(self):
         logger.info(f"category: {F2Pan.categoryName}")
@@ -95,11 +96,11 @@ class TestPlugins(unittest.TestCase):
         data = ApsData(ApsRouter(destinationID="90010000", sourceID="31040000", batchNo="01"),
                        message={"f2pan": F2PanRecord(pan)},
                        aux={})
-        f2.set(data=data, context=ApsContext(context={}))
+        f2.set(context=ApsContext(config=None, data=data))
 
         logger.info(f2.transform())
-        assert f2.data == f2.transform()
-        f2Record: F2PanRecord = f2.data.message.get(f2.fieldName)
+        assert f2.context.data == f2.transform()
+        f2Record: F2PanRecord = f2.context.data.message.get(f2.fieldName)
         assert f2Record is not None
         assert f2Record.length == len(pan)
         assert f2Record.binNumber() == pan[:8]

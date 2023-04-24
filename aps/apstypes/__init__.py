@@ -2,7 +2,7 @@
 Author: Arthur lianyoucq@163.com
 Date: 2023-04-08 20:45:02
 LastEditors: Arthur
-LastEditTime: 2023-04-17 22:01:02
+LastEditTime: 2023-04-23 21:32:18
 Description: data type definitions
 '''
 from typing import Dict, Union
@@ -11,6 +11,18 @@ from dataclasses import dataclass
 from functools import reduce
 from aps import logger
 from aps.exceptions import IllegalLength
+from enum import IntEnum
+
+
+class ApsRole(IntEnum):
+    ACCETPOR = 1 << 0
+    ACQUIRER = 1 << 1
+    FORDWARDER = 1 << 2
+    NETWORKSCHEME = 1 << 3
+    ISSUER = 1 << 4
+
+    ALL_MEMBERS = ACCETPOR | ACQUIRER | FORDWARDER | NETWORKSCHEME | ISSUER
+    ACQUIRERING_MEMBERS = ACCETPOR | ACQUIRER | FORDWARDER
 
 
 @dataclass
@@ -48,7 +60,6 @@ class ApsRejectRouter(ApsRouter):
         self.totalMessageLength = self.totalMessageLength + rejectLength
 
 
-@dataclass
 class ApsRecord(ABC):
     _length: int = 0
 
@@ -85,5 +96,13 @@ class ApsData:
 
 
 @dataclass
+class ApsConfig:
+    # TODO: ApsConfig需要梳理
+    institutions: Dict
+    role: ApsRole
+
+
+@dataclass
 class ApsContext:
-    context: Dict
+    config: ApsConfig
+    data: ApsData

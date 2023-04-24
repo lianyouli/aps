@@ -2,7 +2,7 @@
 Author: Arthur lianyoucq@163.com
 Date: 2023-04-09 20:38:23
 LastEditors: Arthur
-LastEditTime: 2023-04-18 22:06:06
+LastEditTime: 2023-04-23 10:16:27
 Description: plugin interface definition
 '''
 from yapsy.IPlugin import IPlugin
@@ -11,6 +11,13 @@ from aps import logger
 from abc import ABCMeta, abstractmethod
 from aps.exceptions import ApsException
 from typing import Union
+from enum import IntEnum
+
+
+class TransformActionType(IntEnum):
+    PASS = 1 << 0
+    REJECT = 1 << 1
+    PASS_WITH_DRAPBACK = 1 << 2
 
 
 class ISinkerPlugin(IPlugin):
@@ -18,7 +25,7 @@ class ISinkerPlugin(IPlugin):
     """
     categoryName = "SinkerPlugin"
 
-    def write(data: ApsData) -> int:
+    def write(context: ApsContext) -> int:
         raise NotImplementedError("Not Implemented")
 
 
@@ -31,33 +38,32 @@ class IFieldPlugin(IPlugin, metaclass=ABCMeta):
 
     def __init__(self):
         super().__init__()
-        self.data: ApsData = None
-        self.config: ApsContext = None
+        self.context: ApsContext = None
 
-    def set(self, data: ApsData, context: ApsContext = None):
-        self.data: ApsData = data
-        self.config: ApsContext = context
+    def set(self, context: ApsContext = None):
+        self.context: ApsContext = context
 
-    def enter(self) -> bool:
-        return True
+    def beforeTransform(self, action=TransformActionType.PASS) -> ApsContext:
+        if action == TransformActionType.PASS:
+            logger.info(f"{self.fieldName}-with {TransformActionType.PASS.name} will do nothing")
+            return self.context
+        elif action == TransformActionType.PASS_WITH_DRAPBACK:
+            # with {TransformActionType.PASS.name} will do pass the process with drawback")
+            raise NotImplementedError("You should implement the drawback handling")
+        else:
+            # reject
+            raise NotImplementedError("You should implement the reject handling")
 
     @abstractmethod
-    def transform(self) -> Union[ApsData, ApsException]:
-        assert self.data is not None
+    def transform(self) -> ApsData:
+        assert self.context is not None
         raise NotImplementedError("Not Implemented")
 
-    def exit(self) -> bool:
-        return True
+    def afterTransform(self):
+        pass
 
-    def process(self) -> Union[ApsData, ApsException]:
-        if self.enter():
-            logger.info(f"{self.fieldName} enters the processing successfully")
-            data = self.transform()
-
-            if self.exit():
-                logger.info(f"{self.fieldName} exits the processing successfully")
-            else:
-                logger.error(f"{self.fieldName} exits the processing with failure")
-            return data
-
-        raise ApsException(f"{self.fieldName} enters the processing successfully")
+    def process(self) -> ApsData:
+        self.context = self.beforeTransform()
+        data = self.transform()
+        self.afterTransform()
+        return data
