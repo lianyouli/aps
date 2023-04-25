@@ -9,8 +9,6 @@ from yapsy.IPlugin import IPlugin
 from aps.apstypes import ApsData, ApsContext
 from aps import logger
 from abc import ABCMeta, abstractmethod
-from aps.exceptions import ApsException
-from typing import Union
 from enum import IntEnum
 
 

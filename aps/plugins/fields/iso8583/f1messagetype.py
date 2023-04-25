@@ -6,10 +6,7 @@ LastEditTime: 2023-04-23 21:30:34
 Description: f1 message type
 '''
 from aps.plugins import IFieldPlugin
-from aps.apstypes import ApsData, ApsRouter, ApsRecord, ApsContext
-from aps.apstypes.messagetype import MessageType
-from aps.exceptions import ApsException
-from typing import Union
+from aps.apstypes import ApsData, ApsRecord
 from aps import APS_FIELD_F1FIELDNAME
 from dataclasses import dataclass
 

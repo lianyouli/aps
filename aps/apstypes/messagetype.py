@@ -2,17 +2,15 @@
 Author: Arthur lianyoucq@163.com
 Date: 2023-04-08 20:45:02
 LastEditors: Arthur
-LastEditTime: 2023-04-24 22:17:10
+LastEditTime: 2023-04-25 21:26:25
 Description: Message Type Code
 '''
 
 from enum import Enum
 from abc import abstractmethod, ABCMeta
-import os
-from aps.apstypes import ApsContext, ApsData
+from aps.apstypes import ApsData
 from aps import logger, APS_FIELD_F1FIELDNAME
 from statemachine import State, StateMachine
-from dataclasses import dataclass
 
 
 class _MessageTypeEnum(Enum):
@@ -20,21 +18,21 @@ class _MessageTypeEnum(Enum):
     受 https://github.com/loggi/python-choicesenum 启发
     :param value: 真实枚举值
     :param display: 枚举值描述信息
-    :param msgType: 枚举值类型，主要是区分同一个枚举值对应多种枚举类型
+    :param msgSubType: 枚举值类型，主要是区分同一个枚举值对应多种枚举类型
     """
 
-    def __new__(cls, value, display=None, msgType=None):
+    def __new__(cls, value, display=None, msgSubType=None):
         """__new__ _summary_
 
         :param value: 真实枚举值
         :param display: 枚举值描述信息
-        :param msgType: 枚举值类型，主要是区分同一个枚举值对应多种枚举类型
+        :param msgSubType: 枚举值类型，主要是区分同一个枚举值对应多种枚举类型
         :return: _description_
         """
         obj = object.__new__(cls)
-        obj._value_ = f"{value}{msgType}" if msgType is not None else value
+        obj._value_ = f"{value}{msgSubType}" if msgSubType is not None else value
         obj._display_ = display
-        obj._msgType_ = msgType
+        obj._msgSubType_ = msgSubType
         return obj
 
     @property
@@ -44,30 +42,35 @@ class _MessageTypeEnum(Enum):
         """
         return self._display_ if self._display_ is not None else self.name.replace("_", " ").upper()
 
+    @property
+    def msgSubType(self):
+        return self._msgSubType_ if self._msgSubType_ is not None else ''
+
     def __len__(self) -> int:
         """__len__ 返回真实value的值的长度
         """
-        return len(self.value) if self._msgType_ is None else len(self.value) - len(self._msgType_)
+        return len(self.value) if self._msgSubType_ is None else len(self.value) - len(self._msgSubType_)
 
     def __str__(self) -> str:
-        return str(self.value) if self._msgType_ is None else str(self.value)[:(len(str(self.value)) - len(self._msgType_))]
+        return str(self.value) if self._msgSubType_ is None else str(self.value)[:(len(str(self.value)) -
+                                                                                   len(self._msgSubType_))]
 
     def __hash__(self) -> int:
         return hash(self.value)
 
     def __repr__(self) -> str:
         curr_value = self.value
-        if self._msgType_ is not None:
-            curr_value = self.value[:(len(self.value) - len(self._msgType_))]
+        if self._msgSubType_ is not None:
+            curr_value = self.value[:(len(self.value) - len(self._msgSubType_))]
 
-        return str({"name": self.name, "value": curr_value, "display": self.display, "type": self._msgType_})
+        return str({"name": self.name, "value": curr_value, "display": self.display, "type": self._msgSubType_})
 
     @staticmethod
-    def _get_value(item):
-        return getattr(item, 'value', item)
+    def _get_value(item, attr="value"):
+        return getattr(item, attr, item)
 
     def __eq__(self, other) -> bool:
-        return self.value == self._get_value(other)
+        return self.value == self._get_value(other) and self.msgSubType == self._get_value(other, attr="msgSubType")
 
 
 class MessageType(_MessageTypeEnum):

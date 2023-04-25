@@ -2,7 +2,7 @@
 Author: Arthur lianyoucq@163.com
 Date: 2023-04-08 16:09:35
 LastEditors: Arthur
-LastEditTime: 2023-04-23 11:05:36
+LastEditTime: 2023-04-25 21:41:53
 Description: Arthur's Payment System
 '''
 import pathlib
@@ -12,7 +12,7 @@ __VERSION_EPOCH__ = 1680957107
 
 __APS_PLUGINS_HOME__ = pathlib.Path(__file__).absolute().parent.joinpath("plugins").as_posix()
 
-from aps.utils.log import logger
+from aps.utils.log import logger  # noqa: F401
 
 # Aps Role
 from aps.apstypes import ApsRole
