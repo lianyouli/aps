@@ -2,13 +2,13 @@
 Author: Arthur lianyoucq@163.com
 Date: 2023-04-09 21:41:44
 LastEditors: Arthur
-LastEditTime: 2023-04-25 21:32:45
+LastEditTime: 2023-04-25 22:04:56
 Description: Test apstypes module
 '''
 import unittest
 from tests import logger
 from aps.apstypes.messagetype import MessageType
-from aps.apstypes import ApsData, ApsRouter, ApsContext, ApsRecord, ApsRole
+from aps.apstypes import ApsData, ApsRouter, ApsRole
 from aps.plugins.fields.iso8583.f1messagetype import F1MessageTypeRecord
 
 
@@ -86,4 +86,10 @@ class TestApsTypesMessageType(unittest.TestCase):
 
 
 if __name__ == "__main__":
+    # try:
+    #     import xmlrunner  # type: ignore[import]
+    #     testRunner = xmlrunner.XMLTestRunner(output='tests/test-reports', verbosity=2)
+    # except ImportError:
+    #     testRunner = None
+    # unittest.main(testRunner=testRunner, verbosity=2)
     unittest.main()

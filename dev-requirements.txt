@@ -1,0 +1,21 @@
+# 需要升级 pip & setuptools
+# 插件引擎
+pip
+packaging
+setuptools
+twine
+git+https://gitee.com/lianyouli/yapsy.git#egg=yapsy&subdirectory=package
+
+# 消息队列
+pulsar-client==3.1.0
+
+# 有限自动机
+# pydot
+# graphviz
+python-statemachine==2.0.0
+
+# testing framework
+pytest
+
+# code linter
+ruff

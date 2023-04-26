@@ -2,7 +2,7 @@
 Author: Arthur lianyoucq@163.com
 Date: 2023-04-08 22:35:59
 LastEditors: Arthur
-LastEditTime: 2023-04-23 10:18:15
+LastEditTime: 2023-04-25 22:03:53
 Description: test the plugins
 '''
 from aps.apstypes import ApsContext, ApsRouter, ApsData
